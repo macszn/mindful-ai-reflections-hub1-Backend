@@ -2,7 +2,8 @@
 const express = require('express');
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require('@google/generative-ai');
 const dotenv = require('dotenv');
-//const moodEntriesRouter = require('./routes/moodEntries');
+const moodEntriesRouter = require('./routes/moodEntries');
+const insightsRouter = require('./routes/insights');
 // Load environment variables early before other requires
 dotenv.config();
 const mongoose=require('mongoose');
@@ -208,7 +209,7 @@ async function runChat(userInput) {
 }
 
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000', 'http://localhost:4000']; 
+  const allowedOrigins = ['http://localhost:3000', 'http://localhost:8080']; 
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
@@ -256,6 +257,7 @@ const Users=mongoose.model('Users',{
   }
 })
 
+
 // Creating endpoint for signup
 app.post('/signup',async(req,res)=>{
   let check=await Users.findOne({email:req.body.email});
@@ -283,7 +285,7 @@ app.post('/signup',async(req,res)=>{
   res.json({success:true,token, user});
 });
 
-//app.use('/mood-entries', moodEntriesRouter);
+
 
 //Creating endpoint for UserLogin
 
@@ -309,12 +311,12 @@ app.post('/login',async(req,res)=>{
 //     type:String
 //   },
 //   phone:{
-//     type:String
-//   },
-//   age:{
-//     type:String
-//   },
-//   address:{
+  //     type:String
+  //   },
+  //   age:{
+    //     type:String
+    //   },
+    //   address:{
 //     type:String
 //   },
 //   timeslot:{
@@ -325,6 +327,8 @@ app.post('/login',async(req,res)=>{
 //     default:Date.now
 //   }
 // })
+app.use("/api/journal", moodEntriesRouter);
+app.use("/api/insights", insightsRouter);
 
 const Booking = mongoose.model('Booking', {
   userId: {
@@ -399,6 +403,7 @@ app.get('/user-bookings', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
 
 // app.post('/booking',async(req,res)=>{
 //   const authToken = req.headers.authorization;
