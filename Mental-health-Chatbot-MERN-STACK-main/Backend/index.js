@@ -3,7 +3,8 @@ const express = require('express');
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require('@google/generative-ai');
 const dotenv = require('dotenv');
 const moodEntriesRouter = require('./routes/moodEntries');
-const insightsRouter = require('./routes/insights');
+// const insightsRouter = require('./routes/insights');
+const insightsRoute = require('./routes/insightRoute');
 // Load environment variables early before other requires
 dotenv.config();
 const mongoose=require('mongoose');
@@ -328,7 +329,8 @@ app.post('/login',async(req,res)=>{
 //   }
 // })
 app.use("/api/journal", moodEntriesRouter);
-app.use("/api/insights", insightsRouter);
+// app.use("/api/insights", insightsRoute);
+app.use("/api/insights", insightsRoute);
 
 const Booking = mongoose.model('Booking', {
   userId: {
